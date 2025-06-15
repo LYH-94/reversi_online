@@ -1,0 +1,61 @@
+.backgroung_wh_color {
+    width: 1440px;
+    height: 1044px;
+
+    background: #CEF3FF;
+}
+
+.font_1 {
+    height: 100px;
+    font-size: 48px;
+}
+
+.font_2 {
+    height: 56px;
+    font-size: 24px;
+}
+
+.font_3 {
+    height: 40px;
+    font-size: 24px;
+}
+
+.button_1 {
+    width: 120px;
+    height: 36px;
+    font-size: 24px;
+}
+
+.button_2 {
+    width: 60px;
+    height: 32px;
+    font-size: 18px;
+}
+
+.button_3 {
+    width: 140px;
+    height: 36px;
+    font-size: 24px;
+}
+
+.input_1 {
+    height: 60px;
+
+    background: #CEF3FF;
+}
+
+.mar_bor_pad_0 {
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+}
+
+.bor_pad_0 {
+    border: 0px;
+    padding: 0px;
+}
+
+.mar_bor_0 {
+    margin: 0px;
+    border: 0px;
+}
