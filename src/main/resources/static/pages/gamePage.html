@@ -1,400 +1,419 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <!-- Bootstrap 需要的響應式中繼標籤 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Reversi online</title>
-
-    <!-- ===== 第三方 CSS ===== -->
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-    <!-- ===== 自定義 CSS ===== -->
-    <link rel="stylesheet" href="../styles/common.css">
-
-    <!-- ===== 第三方 JS ===== -->
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
-    <!-- Vue3 JS -->
-    <!--<script src="https://unpkg.com/vue@3/dist/vue.global.js" defer></script>-->
-
-    <!-- ===== 自定義 JS ===== -->
-    <!--<script src="../scripts/common.js" defer></script>-->
-</head>
-
-<body class="d-flex justify-content-center">
-<div class="container-fluid backgroung_wh_color mar_bor_pad_0">
-    <!-- 上面區塊 -->
-    <div id="top" class="row mar_bor_pad_0">
-        <div class="row justify-content-center mar_bor_pad_0">
-            <div class="col-4 mar_bor_pad_0">
-                <span class="d-flex font_1 justify-content-center align-items-center">Reversi Online</span>
-            </div>
+<!-- 上面區塊 -->
+<div id="gamePage" class="row mar_bor_pad_0">
+    <div class="row justify-content-between align-items-center mar_bor_pad_0"
+         style="border-bottom: 2.4px solid #89E2FF;">
+        <div class="col-4 d-flex align-items-center mar_bor_pad_0"
+             style="height: 56px;">
+            <button type="button"
+                    onclick="backToLooby()"
+                    class="btn btn-primary button_3 bor_pad_0"
+                    style="margin: 0px 0px 0px 20px;">返回待機室</button>
         </div>
-        <div class="row justify-content-between align-items-center mar_bor_pad_0"
-             style="border-bottom: 2.4px solid #89E2FF;">
-            <div class="col-4 d-flex align-items-center mar_bor_pad_0"
-                 style="height: 56px;">
-                <button type="button" 
-                        class="btn btn-primary button_3 bor_pad_0" 
-                        style="margin: 0px 0px 0px 20px;">返回待機室</button>
-            </div>
-            <div class="col-4 d-flex justify-content-end align-items-center mar_bor_pad_0">
-                <button type="button" 
-                        class="btn btn-primary button_1 bor_pad_0" 
-                        style="margin: 0px 20px 0px 0px;">查看規則</button>
-            </div>
+        <div class="col-4 d-flex justify-content-end align-items-center mar_bor_pad_0">
+            <button type="button"
+                    class="btn btn-primary button_1 bor_pad_0"
+                    data-bs-toggle="modal" data-bs-target="#ruleModal"
+                    style="margin: 0px 20px 0px 0px;">查看規則</button>
         </div>
     </div>
+</div>
 
-    <!-- 下面區塊 -->
-    <div id="bottom"  class="row mar_bor_pad_0">
-        <!-- 左邊 - 對局區塊 -->
-        <div class="col d-flex justify-content-center mar_bor_pad_0">
-            <div class="row d-flex justify-content-start align-items-start bor_pad_0"
-                 style="margin: 5px 10px 0px 10px;
+<!-- 下面區塊 -->
+<div id="game"
+     class="row mar_bor_pad_0">
+    <!-- 左邊 - 對局區塊 -->
+    <div class="col d-flex justify-content-center mar_bor_pad_0">
+        <div class="row d-flex justify-content-start align-items-start bor_pad_0"
+             style="margin: 5px 10px 0px 10px;
                         border: 2px solid #89E2FF;
                         border-radius: 5px;
                         background-color: #FFFDFD;
                         width: 724px;
                         height: 700px;">
 
-                <!-- 棋盤容器 -->
-                <div class="d-flex flex-column gap-0">
-                    <!-- 第零列 row_0 -->
-                    <div id="xy-00-h0" 
-                         class="d-flex justify-content-center">
-                        <div id="xy-00" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 40px; height: 40px;"></div>
-                        <div id="xy-a0" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 80px; height: 40px;">A</div>
-                        <div id="xy-b0" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 80px; height: 40px;">B</div>
-                        <div id="xy-c0" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 80px; height: 40px;">C</div>
-                        <div id="xy-d0" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 80px; height: 40px;">D</div>
-                        <div id="xy-e0" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 80px; height: 40px;">E</div>
-                        <div id="xy-f0" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 80px; height: 40px;">F</div>
-                        <div id="xy-g0" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 80px; height: 40px;">G</div>
-                        <div id="xy-h0" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 80px; height: 40px;">H</div>
-                    </div>
-                    <!-- 第一列 row_1 -->
-                    <div id="xy-01-h1" 
-                         class="d-flex justify-content-center">
-                        <div id="xy-01" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 40px; height: 80px;">1</div>
-                        <div id="xy-a1" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;
-                                    border-radius: 5px 0px 0px 0px;">a1</div>
-                        <div id="xy-b1" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">b1</div>
-                        <div id="xy-c1" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">c1</div>
-                        <div id="xy-d1" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">d1</div>
-                        <div id="xy-e1" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">e1</div>
-                        <div id="xy-f1" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">f1</div>
-                        <div id="xy-g1" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">g1</div>
-                        <div id="xy-h1" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;
-                                    border-radius: 0px 5px 0px 0px;">h1</div>
-                    </div>
-                    <!-- 第二列 row_2 -->
-                    <div id="xy-02-h2" 
-                         class="d-flex justify-content-center">
-                        <div id="xy-02" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 40px; height: 80px;">2</div>
-                        <div id="xy-a2" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">a2</div>
-                        <div id="xy-b2" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">b2</div>
-                        <div id="xy-c2" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">c2</div>
-                        <div id="xy-d2" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">d2</div>
-                        <div id="xy-e2" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">e2</div>
-                        <div id="xy-f2" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">f2</div>
-                        <div id="xy-g2" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">g2</div>
-                        <div id="xy-h2" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">h2</div>
-                    </div>
-                    <!-- 第三列 row_3 -->
-                    <div id="xy-03-h3" 
-                         class="d-flex justify-content-center">
-                        <div id="xy-03" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 40px; height: 80px;">3</div>
-                        <div id="xy-a3" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">a3</div>
-                        <div id="xy-b3" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">b3</div>
-                        <div id="xy-c3" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">c3</div>
-                        <div id="xy-d3" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">
-                             <img src="../images/allowPosition.svg" >
-                        </div>
-                        <div id="xy-e3" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">e3</div>
-                        <div id="xy-f3" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">f3</div>
-                        <div id="xy-g3" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">g3</div>
-                        <div id="xy-h3" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">h3</div>
-                    </div>
-                    <!-- 第四列 row_4 -->
-                    <div id="xy-04-h4" 
-                         class="d-flex justify-content-center">
-                        <div id="xy-04" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 40px; height: 80px;">4</div>
-                        <div id="xy-a4" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">a4</div>
-                        <div id="xy-b4" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">b4</div>
-                        <div id="xy-c4" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">
-                             <img src="../images/allowPosition.svg" >
-                        </div>
-                        <div id="xy-d4" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">
-                             <img src="../images/white.svg" >
-                        </div>
-                        <div id="xy-e4" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">
-                             <img src="../images/black.svg" >
-                        </div>
-                        <div id="xy-f4" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">f4</div>
-                        <div id="xy-g4" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">g4</div>
-                        <div id="xy-h4" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">h4</div>
-                    </div>
-                    <!-- 第五列 row_5 -->
-                    <div id="xy-05-h5" 
-                         class="d-flex justify-content-center">
-                        <div id="xy-05" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 40px; height: 80px;">5</div>
-                        <div id="xy-a5" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">a5</div>
-                        <div id="xy-b5" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">b5</div>
-                        <div id="xy-c5" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">c5</div>
-                        <div id="xy-d5" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">
-                             <img src="../images/black.svg" >
-                        </div>
-                        <div id="xy-e5" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">
-                             <img src="../images/white.svg" >
-                        </div>
-                        <div id="xy-f5" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">
-                             <img src="../images/allowPosition.svg" >
-                        </div>
-                        <div id="xy-g5" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">g5</div>
-                        <div id="xy-h5" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">h5</div>
-                    </div>
-                    <!-- 第六列 row_6 -->
-                    <div id="xy-06-h6" 
-                         class="d-flex justify-content-center">
-                        <div id="xy-06" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 40px; height: 80px;">6</div>
-                        <div id="xy-a6" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">a6</div>
-                        <div id="xy-b6" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">b6</div>
-                        <div id="xy-c6" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">c6</div>
-                        <div id="xy-d6" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">d6</div>
-                        <div id="xy-e6" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">
-                             <img src="../images/allowPosition.svg" >
-                        </div>
-                        <div id="xy-f6" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">f6</div>
-                        <div id="xy-g6" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">g6</div>
-                        <div id="xy-h6" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">h6</div>
-                    </div>
-                    <!-- 第七列 row_7 -->
-                    <div id="xy-07-h7" 
-                         class="d-flex justify-content-center">
-                        <div id="xy-07" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 40px; height: 80px;">7</div>
-                        <div id="xy-a7" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">a7</div>
-                        <div id="xy-b7" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">b7</div>
-                        <div id="xy-c7" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">c7</div>
-                        <div id="xy-d7" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">d7</div>
-                        <div id="xy-e7" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">e7</div>
-                        <div id="xy-f7" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">f7</div>
-                        <div id="xy-g7" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">g7</div>
-                        <div id="xy-h7" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">h7</div>
-                    </div>
-                    <!-- 第八列 row_8 -->
-                    <div id="xy-08-h8" 
-                         class="d-flex justify-content-center">
-                        <div id="xy-08" 
-                             class="d-flex justify-content-center align-items-center" 
-                             style="width: 40px; height: 80px;">8</div>
-                        <div id="xy-a8" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;
-                                    border-radius: 0px 0px 0px 5px;">a8</div>
-                        <div id="xy-b8" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">b8</div>
-                        <div id="xy-c8" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">c8</div>
-                        <div id="xy-d8" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">d8</div>
-                        <div id="xy-e8" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">e8</div>
-                        <div id="xy-f8" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">f8</div>
-                        <div id="xy-g8" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;">g8</div>
-                        <div id="xy-h8" 
-                             class="d-flex justify-content-center align-items-center border" 
-                             style="width: 80px; height: 80px;
-                                    border-radius: 0px 0px 5px 0px;">h8</div>
-                    </div>
+            <!-- 棋盤容器 -->
+            <div class="d-flex flex-column gap-0">
+                <!-- 第零列 row_0 -->
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 40px; height: 40px;"></div>
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 40px;">A</div>
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 40px;">B</div>
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 40px;">C</div>
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 40px;">D</div>
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 40px;">E</div>
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 40px;">F</div>
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 40px;">G</div>
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 80px; height: 40px;">H</div>
                 </div>
-            </div>
-        </div>
-
-        <!-- 右邊 - 對局訊息 -->
-        <div class="col-3 mar_bor_pad_0"
-             style="border-left: 2.4px solid #89E2FF; height: 868px;">
-            <div class="row mar_bor_pad_0">
-                <div class="col mar_bor_pad_0">
-                    <span class="d-flex font_3 justify-content-center align-items-center">對局訊息</span>
+                <!-- 第一列 row_1 -->
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 40px; height: 80px;">1</div>
+                    <div id="xy-00"
+                         onclick="game_move('0,0')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;
+                                    border-radius: 5px 0px 0px 0px;">1a</div>
+                    <div id="xy-01"
+                         onclick="game_move('0,1')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">1b</div>
+                    <div id="xy-02"
+                         onclick="game_move('0,2')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">1c</div>
+                    <div id="xy-03"
+                         onclick="game_move('0,3')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">1d</div>
+                    <div id="xy-04"
+                         onclick="game_move('0,4')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">1e</div>
+                    <div id="xy-05"
+                         onclick="game_move('0,5')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">1f</div>
+                    <div id="xy-06"
+                         onclick="game_move('0,6')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">1g</div>
+                    <div id="xy-07"
+                         onclick="game_move('0,7')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;
+                                    border-radius: 0px 5px 0px 0px;">1h</div>
                 </div>
-            </div>
-            <div class="row mar_bor_pad_0"
-                 style="margin: 0px 10px 0px 10px;
-                        border: 2.4px solid #89E2FF;
-                        border-radius: 5px;
-                        height: 650px;">
-                <div class="col mar_bor_pad_0">
-                    <span class="d-flex font_3 justify-content-left align-items-center"
-                          style="margin: 5px 10px 5px 10px;">白子：2</span>
-                    <span class="d-flex font_3 justify-content-center align-items-center"
-                          style="margin: 5px 10px 5px 10px;">player3</span>
-                    <span class="d-flex font_3 justify-content-left align-items-center"
-                          style="margin: 5px 10px 5px 10px;">黑子：2</span>
-                    <span class="d-flex font_3 justify-content-center align-items-center"
-                          style="margin: 5px 10px 5px 10px;">player5</span>
-                    <span class="d-flex font_3 justify-content-left align-items-center"
-                          style="margin: 5px 10px 5px 10px;">當前落子：</span>
-                    <span class="d-flex font_3 justify-content-center align-items-center"
-                          style="margin: 5px 10px 5px 10px;">黑子</span>
+                <!-- 第二列 row_2 -->
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 40px; height: 80px;">2</div>
+                    <div id="xy-10"
+                         onclick="game_move('1,0')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">2a</div>
+                    <div id="xy-11"
+                         onclick="game_move('1,1')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">2b</div>
+                    <div id="xy-12"
+                         onclick="game_move('1,2')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">2c</div>
+                    <div id="xy-13"
+                         onclick="game_move('1,3')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">2d</div>
+                    <div id="xy-14"
+                         onclick="game_move('1,4')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">2e</div>
+                    <div id="xy-15"
+                         onclick="game_move('1,5')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">2f</div>
+                    <div id="xy-16"
+                         onclick="game_move('1,6')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">2g</div>
+                    <div id="xy-17"
+                         onclick="game_move('1,7')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">2h</div>
+                </div>
+                <!-- 第三列 row_3 -->
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 40px; height: 80px;">3</div>
+                    <div id="xy-20"
+                         onclick="game_move('2,0')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">3a</div>
+                    <div id="xy-21"
+                         onclick="game_move('2,1')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">3b</div>
+                    <div id="xy-22"
+                         onclick="game_move('2,2')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">3c</div>
+                    <div id="xy-23"
+                         onclick="game_move('2,3')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">3d</div>
+                    <div id="xy-24"
+                         onclick="game_move('2,4')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">3e</div>
+                    <div id="xy-25"
+                         onclick="game_move('2,5')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">3f</div>
+                    <div id="xy-26"
+                         onclick="game_move('2,6')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">3g</div>
+                    <div id="xy-27"
+                         onclick="game_move('2,7')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">3h</div>
+                </div>
+                <!-- 第四列 row_4 -->
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 40px; height: 80px;">4</div>
+                    <div id="xy-30"
+                         onclick="game_move('3,0')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">4a</div>
+                    <div id="xy-31"
+                         onclick="game_move('3,1')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">4b</div>
+                    <div id="xy-32"
+                         onclick="game_move('3,2')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">4c</div>
+                    <div id="xy-33"
+                         onclick="game_move('3,3')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">4d</div>
+                    <div id="xy-34"
+                         onclick="game_move('3,4')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">4e</div>
+                    <div id="xy-35"
+                         onclick="game_move('3,5')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">4f</div>
+                    <div id="xy-36"
+                         onclick="game_move('3,6')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">4g</div>
+                    <div id="xy-37"
+                         onclick="game_move('3,7')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">4h</div>
+                </div>
+                <!-- 第五列 row_5 -->
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 40px; height: 80px;">5</div>
+                    <div id="xy-40"
+                         onclick="game_move('4,0')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">5a</div>
+                    <div id="xy-41"
+                         onclick="game_move('4,1')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">5b</div>
+                    <div id="xy-42"
+                         onclick="game_move('4,2')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">5c</div>
+                    <div id="xy-43"
+                         onclick="game_move('4,3')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">5d</div>
+                    <div id="xy-44"
+                         onclick="game_move('4,4')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">5e</div>
+                    <div id="xy-45"
+                         onclick="game_move('4,5')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">5f</div>
+                    <div id="xy-46"
+                         onclick="game_move('4,6')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">5g</div>
+                    <div id="xy-47"
+                         onclick="game_move('4,7')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">5h</div>
+                </div>
+                <!-- 第六列 row_6 -->
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 40px; height: 80px;">6</div>
+                    <div id="xy-50"
+                         onclick="game_move('5,0')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">6a</div>
+                    <div id="xy-51"
+                         onclick="game_move('5,1')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">6b</div>
+                    <div id="xy-52"
+                         onclick="game_move('5,2')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">6c</div>
+                    <div id="xy-53"
+                         onclick="game_move('5,3')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">6d</div>
+                    <div id="xy-54"
+                         onclick="game_move('5,4')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">6e</div>
+                    <div id="xy-55"
+                         onclick="game_move('5,5')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">6f</div>
+                    <div id="xy-56"
+                         onclick="game_move('5,6')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">6g</div>
+                    <div id="xy-57"
+                         onclick="game_move('5,7')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">6h</div>
+                </div>
+                <!-- 第七列 row_7 -->
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 40px; height: 80px;">7</div>
+                    <div id="xy-60"
+                         onclick="game_move('6,0')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">7a</div>
+                    <div id="xy-61"
+                         onclick="game_move('6,1')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">7b</div>
+                    <div id="xy-62"
+                         onclick="game_move('6,2')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">7c</div>
+                    <div id="xy-63"
+                         onclick="game_move('6,3')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">7d</div>
+                    <div id="xy-64"
+                         onclick="game_move('6,4')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">7e</div>
+                    <div id="xy-65"
+                         onclick="game_move('6,5')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">7f</div>
+                    <div id="xy-66"
+                         onclick="game_move('6,6')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">7g</div>
+                    <div id="xy-67"
+                         onclick="game_move('6,7')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">7h</div>
+                </div>
+                <!-- 第八列 row_8 -->
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center"
+                         style="width: 40px; height: 80px;">8</div>
+                    <div id="xy-70"
+                         onclick="game_move('7,0')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;
+                                    border-radius: 0px 0px 0px 5px;">8a</div>
+                    <div id="xy-71"
+                         onclick="game_move('7,1')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">8b</div>
+                    <div id="xy-72"
+                         onclick="game_move('7,2')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">8c</div>
+                    <div id="xy-73"
+                         onclick="game_move('7,3')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">8d</div>
+                    <div id="xy-74"
+                         onclick="game_move('7,4')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">8e</div>
+                    <div id="xy-75"
+                         onclick="game_move('7,5')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">8f</div>
+                    <div id="xy-76"
+                         onclick="game_move('7,6')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;">8g</div>
+                    <div id="xy-77"
+                         onclick="game_move('7,7')"
+                         class="d-flex justify-content-center align-items-center border"
+                         style="width: 80px; height: 80px;
+                                    border-radius: 0px 0px 5px 0px;">8h</div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- 右邊 - 對局訊息 -->
+    <div class="col-3 mar_bor_pad_0"
+         style="border-left: 2.4px solid #89E2FF; height: 868px;">
+        <div class="row mar_bor_pad_0">
+            <div class="col mar_bor_pad_0">
+                <span class="d-flex font_3 justify-content-center align-items-center">對局訊息</span>
+            </div>
+        </div>
+        <div class="row mar_bor_pad_0"
+             style="margin: 0px 10px 0px 10px;
+                        border: 2.4px solid #89E2FF;
+                        border-radius: 5px;
+                        height: 650px;">
+            <div class="col mar_bor_pad_0">
+                    <span class="d-flex font_3 justify-content-left align-items-center"
+                          style="margin: 5px 10px 5px 10px;">白子：</span>
+                <span class="d-flex font_3 justify-content-center align-items-center"
+                      style="margin: 5px 10px 5px 10px;">{{ white_player }}</span>
+                <span class="d-flex font_3 justify-content-left align-items-center"
+                      style="margin: 5px 10px 5px 10px;">黑子：</span>
+                <span class="d-flex font_3 justify-content-center align-items-center"
+                      style="margin: 5px 10px 5px 10px;">{{ black_player }}</span>
+                <span class="d-flex font_3 justify-content-left align-items-center"
+                      style="margin: 5px 10px 5px 10px;">當前落子：</span>
+                <span class="d-flex font_3 justify-content-center align-items-center"
+                      style="margin: 5px 10px 5px 10px;">{{ current_move }}</span>
+            </div>
+        </div>
+    </div>
 </div>
-</body>
-</html>
+
+<!-- ruleModal -->
+<div class="modal fade" id="ruleModal" tabindex="-1" aria-labelledby="ruleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ruleModalLabel">黑白棋規則</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    <li>黑方先行。</li>
+                    <li>把自己顏色的棋子放在棋盤的空格上，而當自己放下的棋子在橫、豎、斜八个方向內有一个自己的棋子，則被夾在中間的全部翻轉成為自己的棋子，夾住的位置上必須全部是對手的棋子，且不能有空格。</li>
+                    <li>只有在可以翻轉棋子的地方才可以下子。</li>
+                    <li>一步棋可以同時在數個方向 ( 橫著夾，豎著夾，或斜著夾 ) 上翻棋，任何被夾住的棋子都必須翻轉過來，棋手無權選擇不去翻某個棋子。</li>
+                    <li>如果一方至少有一步合法棋步可下，他就必須落子，不得放棄。</li>
+                    <li>如果一方沒有合法棋步，也就是說不管他下到哪裡，都無法翻轉對手的棋子，那他這一輪只能放棄，而由他的對手繼續落子直到他有合法棋步可下。</li>
+                    <li>結束的條件：</li>
+                        <ul>
+                            <li>棋盤填滿了棋子。</li>
+                            <li>雙方都無合法棋步可下。</li>
+                            <li>一方的棋子已經被對方翻光。</li>
+                        </ul>
+                    <li>結束時誰的棋子最多誰就勝利。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
