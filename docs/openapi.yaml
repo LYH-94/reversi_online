@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  title: Reversi Online OpenAPI document
+  version: 1.0.2
+servers:
+  - url: http://linyaohua.ddns.net:7777/reversi_online
+paths:
+  /connectionRequest:
+    get:
+      summary: 「連線」請求。
+      description:
+        當初次連時獲取 player_uuid 並響應「index」頁面。
+        響應「index」頁面後還需要建立 WebSocket 連線，因此需要接著發送 ws 連線請求。
+      tags:
+        - player
+      security: []    # 無需身份驗證。
+      responses:
+        '200':
+          description: 「index」頁面響應成功。
+          headers:
+            Set-Cookie:
+              description: player_uuid 用於識別玩家、nick_name 為玩家暱稱，以生成 player_uuid 的時間戳代替。
+              schema:
+                type: string
+                example: [player_uuid=11e2e08b-8a8d-4f64-91b4-569879d90aa4_1755506825687, nick_name=1755506825687]
+          content:
+            text/html:
+              schema:
+                type: string
+  /queue:
+    get:
+      summary: 「排隊」請求。
+      tags:
+        - player
+      responses:
+        '200':
+          description: 已成功加入排隊。
+  /cancelQueue:
+    get:
+      summary: 「取消排隊」請求。
+      tags:
+        - player
+      responses:
+        '200':
+          description: 已成功取消排隊。
+  /pages/lobbyPage.html:
+    get:
+      summary: 請求「待機室」頁面。
+      tags:
+        - player
+      responses:
+        '200':
+          description: 「待機室」頁面響應成功。
+          content:
+            text/html:
+              schema:
+                type: string
+  /lobbyData:
+    get:
+      summary: 獲取「待機室」數據。
+      description:
+        訪問「待機室」頁面後，還需要相關的數據，因此在獲取「待機室」頁面後，
+        接著發送 /lobbyData 請求，但該請求不接收數據，由 WebSocket 負責回傳數據。
+      tags:
+        - player
+      responses:
+        '200':
+          description: 發送獲取「待機室」數據成功。
+  /pages/gamePage.html:
+    get:
+      summary: 請求「對局」頁面。
+      tags:
+        - player
+      responses:
+        '200':
+          description: 「對局」頁面響應成功。
+          content:
+            text/html:
+              schema:
+                type: string
+  /gameData/{req_reconnect}:
+    get:
+      summary: 獲取「對局」數據。
+      description:
+        訪問「對局」頁面後，還需要相關的數據，因此在獲取「對局」頁面後，
+        接著發送 /gameData/{req_reconnect} 請求，但該請求不接收數據，由 WebSocket 負責回傳數據。
+      parameters:
+        - in: path
+          name: req_reconnect
+          schema:
+            type: string
+          required: true
+          description: 是否啟動「斷線重連」。
+      tags:
+        - player
+      responses:
+        '200':
+          description: 發送獲取「對局」數據成功。
+  /backToLooby:
+    get:
+      summary: 「返回待機室」請求。
+      description:
+        當玩家對局結束或對局中但不想繼續對局時，發送「返回待機室」請求，後端處理完相關業務邏輯後，響應「待機室」頁面給發送請求者。
+      tags:
+        - player
+      responses:
+        '200':
+          description: 「待機室」頁面響應成功。
+          content:
+            text/html:
+              schema:
+                type: string
+  /pages/watch.html:
+    get:
+      summary: 請求「觀戰」頁面。觀戰頁面和對局頁面是一樣的，只是根據業務功能做區分而已。
+      tags:
+        - player
+      responses:
+        '200':
+          description: 「對局」頁面響應成功。
+          content:
+            text/html:
+              schema:
+                type: string
+  /watch/{req_gameId}:
+    get:
+      summary: 「觀戰」請求。
+      description:
+        發送「觀戰」請求後，還需要相關的數據，因此在獲取頁面後，
+        接著發送 /watch/{req_gameId} 請求，但該請求不接收數據，
+        由 WebSocket 負責回傳數據。
+      parameters:
+        - in: path
+          name: req_gameId
+          schema:
+            type: string
+          required: true
+          description: 要觀戰的對局 ID。
+      tags:
+        - player
+      responses:
+        '200':
+          description: 發送「觀戰」請求成功。
+
+components:
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: player_uuid
+      description: 用於辨識玩家，儲存在 cookie 中。
+security:
+  - CookieAuth: []

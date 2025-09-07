@@ -41,16 +41,12 @@ public class HeartbeatManager {
         for (Map.Entry<WebSocketSession, Long> entry : lastHeartbeatMap.entrySet()) {
             if (now - entry.getValue() > 60_000) {
                 try {
-                    // 關閉連線時，移除心跳。
-                    lastHeartbeatMap.remove(entry.getKey());
-
-                    // 獲取該 WebSocket 連線對應的玩家 UUID。
-                    String player_uuid = webSocketSessionManager.getSession(entry.getKey());
-
-                    // 處理玩家斷線。
-                    playerManagement.playerDisconnected(player_uuid);
-
-                    // 刪除該玩家的 WebSocket 連線。
+                    // 關閉該玩家的 WebSocket 連線。
+                    /*
+                        afterConnectionClosed() 是伺服器端 WebSocket 的生命週期事件，
+                        所以當調用 session.close() 函式時，也勢必會觸發 afterConnectionClosed()，
+                        因此，可以統一在 afterConnectionClosed() 中處理關閉連線邏輯。
+                    */
                     entry.getKey().close(new CloseStatus(1001, "Heartbeat timeout"));
                 } catch (IOException e) {
                     e.printStackTrace();

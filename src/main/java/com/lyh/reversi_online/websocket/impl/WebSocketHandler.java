@@ -107,6 +107,9 @@ public class WebSocketHandler extends TextWebSocketHandler implements IWebSocket
         Map<String, Object> attributes = session.getAttributes();
         String cookie_player_uuid = (String) attributes.get("player_uuid");
         playerManagement.playerDisconnected(cookie_player_uuid);
+
+        // 移除 WebSocket session
+        webSocketSessionManager.removeSession(cookie_player_uuid);
     }
 
     @Override

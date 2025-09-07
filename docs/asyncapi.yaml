@@ -1,0 +1,259 @@
+asyncapi: '3.0.0'
+info:
+  title: Reversi Online AsyncAPI document
+  version: '1.0.1'
+  description:  |
+    「網路黑白棋」透過 WebSocket 與玩家交互，處理玩家開局、對局同步、落子、聊天等功能。
+
+servers:
+  ReversiOnline:
+    host: http://linyaohua.ddns.net:7777
+    pathname: /reversi_onlin/ws
+    protocol: ws
+    x-handshake-process:
+      description: WebSocket 握手階段前先從 cookie 中提取 player_uuid 並儲存至 Session 中，用於之後接收 WebSocket 訊息時方便辨識玩家。
+    security:
+      - $ref: '#/components/securitySchemes/playerUUID'
+
+operations:
+  sendLobbyData:
+    description: 發送「待機室」數據。
+    action: send
+    channel:
+      $ref: '#/channels/lobby'
+    messages:
+      - $ref: '#/channels/lobby/messages/render_data:LobbyData'
+  sendGameData:
+    description: 發送「對局」數據。
+    action: send
+    channel:
+      $ref: '#/channels/game'
+    messages:
+      - $ref: '#/channels/game/messages/render_data:GameData'
+  redirect_page:lobbyPage:
+    description: 通知前端跳轉「待機室」頁面。
+    action: send
+    channel:
+      $ref: '#/channels/lobby'
+    messages:
+      - $ref: '#/channels/lobby/messages/redirect_page:lobbyPage'
+  redirect_page:gamePage:
+    description: 通知前端跳轉「對局」頁面及是否啟動「斷線重連」。
+    action: send
+    channel:
+      $ref: '#/channels/game'
+    messages:
+      - $ref: '#/channels/game/messages/redirect_page:gamePage'
+
+  gameMove:
+    description: 玩家落子訊息。
+    action: receive
+    channel:
+      $ref: '#/channels/game'
+    messages:
+      - $ref: '#/channels/game/messages/game_move'
+  chatMessage:
+    description: 收到聊天訊息後，廣播聊天訊息給「待機室」中的所有玩家。
+    action: receive
+    channel:
+      $ref: '#/channels/chat'
+    messages:
+      - $ref: '#/channels/chat/messages/chat_message'
+    reply:
+      channel:
+        $ref: '#/channels/chat'
+      messages:
+        - $ref: '#/channels/chat/messages/chat_message'
+  checkWebSocketConnection:
+    description: 檢查 WebSocket 連線。
+    action: receive
+    channel:
+      $ref: '#/channels/player'
+    messages:
+      - $ref: '#/channels/player/messages/PING'
+
+channels:
+  lobby:
+    messages:
+      render_data:LobbyData:
+        $ref: '#/components/messages/render_data:LobbyData'
+      redirect_page:lobbyPage:
+        $ref: '#/components/messages/redirect_page:lobbyPage'
+  game:
+    messages:
+      render_data:GameData:
+        $ref: '#/components/messages/render_data:GameData'
+      redirect_page:gamePage:
+        $ref: '#/components/messages/redirect_page:gamePage'
+      game_move:
+        $ref: '#/components/messages/game_move'
+  chat:
+    messages:
+      chat_message:
+        $ref: '#/components/messages/chat_message'
+  player:
+    messages:
+      PING:
+        $ref: '#/components/messages/PING'
+
+components:
+  messages:
+    render_data:LobbyData:
+      description: 發送「待機室」數據給前端渲染頁面。
+      payload:
+        $ref: '#/components/schemas/render_data:LobbyData'
+    render_data:GameData:
+      description: 發送「對局」數據給前端渲染頁面。
+      payload:
+        $ref: '#/components/schemas/render_data:GameData'
+    redirect_page:lobbyPage:
+      description: 通知前端發送獲取待機室頁面的請求給後端。
+      payload:
+        $ref: '#/components/schemas/redirect_page:lobbyPage'
+    redirect_page:gamePage:
+      description: 通知前端發送獲取對局頁面的請求給後端。
+      payload:
+        $ref: '#/components/schemas/redirect_page:gamePage'
+    game_move:
+      description: 玩家落子訊息。
+      payload:
+        $ref: '#/components/schemas/game_move'
+    chat_message:
+      description: 玩家聊天訊息。
+      payload:
+        $ref: '#/components/schemas/chat_message'
+    PING:
+      description: 用於通知後端該 WebSocket 連線還存活。使用 'ping'。
+      payload:
+        $ref: '#/components/schemas/PING'
+  schemas:
+    render_data:LobbyData:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 渲染數據 'render_data:LobbyData'。
+        message:
+          type: object
+          $ref: '#/components/schemas/LobbyData'
+    render_data:GameData:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 渲染數據 'render_data:GameData'。
+        message:
+          type: object
+          $ref: '#/components/schemas/GameData'
+    redirect_page:lobbyPage:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 通知前端發送獲取「待機室」頁面請求 'redirect_page:lobbyPage'。
+        page_name:
+          type: string
+          description: 要獲取的頁面名稱為 lobbyPage。
+    redirect_page:gamePage:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 通知前端發送獲取「對局」頁面請求 'redirect_page:gamePage'。
+        page_name:
+          type: string
+          description: 要獲取的頁面名稱為 gamePage。
+        reconnect:
+          type: boolean
+          description: 用於獲取對局數據時是否啟用「斷線重連」。
+    game_move:
+      type: object
+      description: 玩家落子訊息。
+      properties:
+        type:
+          type: string
+          description: 表示類型 'game_move'。
+        message:
+          type: object
+          properties:
+            game_id:
+              type: string
+              description: 表示對局 ID。
+            position:
+              type: array
+              example: [3,4]
+    chat_message:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 表示類型 'chat_message'。
+        player:
+          type: string
+          description: 表示發送訊息的玩家暱稱。
+        message:
+          type: string
+          description: 表示訊息內容。
+    PING:
+      type: string
+      description: 用於通知後端該 WebSocket 連線還存活。使用 'ping'。
+    GameData:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 每個 GameData 的自增 id，用於未來可能儲存至關聯式數據庫時使用。
+        game_id:
+          type: string
+          description: 表示對局的 id
+        white:
+          type: string
+          description: white 用於表示對局中白方的玩家暱稱。
+        white_uuid:
+          type: string
+        black:
+          type: string
+          description: black 用於表示對局中黑方的玩家暱稱。
+        black_uuid:
+          type: string
+        current_move:
+          type: string
+          description: 表示當前回合輪到白方或黑方落子。
+          example: 'white'
+        board_status:
+          type: array
+          description: 表示當前棋盤狀態。
+          example: |
+            [[0]3*8,
+            [0, 0, 0, 1, 2, 0, 0, 0,],
+            [0, 0, 0, 2, 1, 0, 0, 0,],
+            [0]3*8,]
+    LobbyData:
+      type: object
+      properties:
+        online_players:
+          type: integer
+        lobby_players_list:
+          type: array
+          example: [playerA.nick_name, playerB.nick_name, ...]
+        game_list:
+          type: array
+          $ref: '#/components/schemas/GameList'
+    GameList:
+      type: object
+      description: 用於待機室中觀戰列表的數據
+      properties:
+        game_id:
+          type: string
+          description: 對局 id
+        white:
+          type: string
+          description: 白方暱稱
+        black:
+          type: string
+          description: 黑方暱稱
+  securitySchemes:
+    playerUUID:
+      type: httpApiKey
+      in: cookie
+      name: player_uuid
