@@ -25,6 +25,13 @@
 
 黑白棋 ( Reversi Online )，是一款透過瀏覽器即可進行對弈的網路黑白棋，玩家無需註冊會員即可進行對局。其中包含待機室、即時聊天、玩家對局、觀戰等功能，
 
+該專案的主要目的在於練習以下技術：
+- Spring Boot 後端框架技術的使用
+- WebSocket 即時全雙工通訊 - 處理對局同步、聊天功能
+- Redis - 暫存玩家數據、對局數據
+- 多執行緒處理 - 處理多個不同的棋局
+- UML 系統建模
+
 GitHub：[reversi_online](https://github.com/LYH-94/reversi_online)
 
 UI 設計：[Reversi online](https://www.figma.com/design/xZkkIagiOKJlOEd6kidLHC/Reversi-online?node-id=0-1&t=XvIsB9GLlsIkScgB-1)
