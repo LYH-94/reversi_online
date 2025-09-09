@@ -337,9 +337,9 @@ Demo - http://linyaohua.ddns.net:7777/reversi_online/connectionRequest
 
 根據需求撰寫的同步 HTTP API 及事件驅動 API 如下：
 
-[openapi.yaml](https://github.com/LYH-94/dietary_assistant/blob/main/docs/openapi.yaml)
+[openapi.yaml](https://github.com/LYH-94/reversi_online/blob/main/docs/openapi.yaml)
 
-[asyncapi.yaml](https://github.com/LYH-94/dietary_assistant/blob/main/docs/asyncapi.yaml)
+[asyncapi.yaml](https://github.com/LYH-94/reversi_online/blob/main/docs/asyncapi.yaml)
 
 ## 用到的技術
 
