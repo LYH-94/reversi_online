@@ -1,4 +1,4 @@
-# 黑白棋 ( Reversi Online )
+# 線上黑白棋 ( Reversi Online )
 <p align="center">
   <img src="./docs/images/gamePage.png" />
 </p>
@@ -23,16 +23,16 @@
 
 # 關於
 
-黑白棋 ( Reversi Online )，是一款透過瀏覽器即可進行對弈的網路黑白棋，玩家無需註冊會員即可進行對局。其中包含待機室、即時聊天、玩家對局、觀戰等功能。
+線上黑白棋 ( Reversi Online )，是一款透過瀏覽器即可進行對弈的黑白棋遊戲，玩家無需註冊會員即可進行對局。其中包含待機室、即時聊天、玩家對局、觀戰等功能，並具備斷線重連機制，讓玩家在網路意外中斷後能快速恢復對局。
 
-該專案的主要目的在於練習以下技術：
+主要使用以下技術：
 
-- Spring Boot 後端框架技術的使用
-- WebSocket 即時全雙工通訊 - 處理對局同步、聊天功能
-    - Async API 設計
-- Redis 記憶體數據庫 - 儲存玩家數據、對局數據
-- 多執行緒處理 - 處理多個不同的棋局
-- UML 系統設計
+- Spring Boot：快速建置專案，整合 Spring MVC、WebSocket 與 Redis，簡化專案配置並加速開發流程。
+- WebSocket：處理全雙工通訊，實現對局同步與聊天廣播功能，提升對局與聊天的即時互動體驗。
+- Redis：暫存玩家與對局數據，加速查詢及優化系統效能。
+- Spring ThreadPoolTaskExecutor：管理多執行緒，設定核心/最大執行緒數以支援多場對局的併行處理並避免阻塞。
+- Vue：作為前端框架，用於接收後端傳遞的系統數據並進行動態頁面渲染，將結果呈現給使用者，實現前後端分離的開發模式。
+- UML系統建模：規劃核心模組、交互流程及部屬架構，釐清模組邊界並降低耦合度。
 
 GitHub：[reversi_online](https://github.com/LYH-94/reversi_online)
 
