@@ -40,6 +40,8 @@ UI 設計：[Reversi online](https://www.figma.com/design/xZkkIagiOKJlOEd6kidLHC
 
 Demo - http://linyaohua.ddns.net:7777/reversi_online/connectionRequest
 
+※由於最少需要兩位玩家才能對局，試玩時可以利用瀏覽器的無痕模式模擬對手。
+
 ※僅有「訪客」身分，無會員功能。
 
 # 頁面與功能
