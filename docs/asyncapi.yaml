@@ -1,15 +1,14 @@
 asyncapi: '3.0.0'
 info:
   title: Reversi Online AsyncAPI document
-  version: '1.0.1'
+  version: '1.0.2'
   description:  |
     「網路黑白棋」透過 WebSocket 與玩家交互，處理玩家開局、對局同步、落子、聊天等功能。
 
 servers:
   ReversiOnline:
-    host: http://linyaohua.ddns.net:7777
-    pathname: /reversi_onlin/ws
     protocol: ws
+    url: ws://linyaohua.ddns.net:7777/reversi_online/ws
     x-handshake-process:
       description: WebSocket 握手階段前先從 cookie 中提取 player_uuid 並儲存至 Session 中，用於之後接收 WebSocket 訊息時方便辨識玩家。
     security:
@@ -44,7 +43,6 @@ operations:
       $ref: '#/channels/game'
     messages:
       - $ref: '#/channels/game/messages/redirect_page:gamePage'
-
   gameMove:
     description: 玩家落子訊息。
     action: receive
