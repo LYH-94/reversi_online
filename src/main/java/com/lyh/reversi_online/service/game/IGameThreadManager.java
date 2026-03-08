@@ -1,6 +1,5 @@
 package com.lyh.reversi_online.service.game;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lyh.reversi_online.pojo.PlayerData;
 
 public interface IGameThreadManager {
@@ -11,7 +10,7 @@ public interface IGameThreadManager {
     public void createGameThread(String playerUUID_One, String playerUUID_Two);
 
     // 中斷對局。
-    public void surrender(PlayerData playerData) throws JsonProcessingException;
+    public void surrender(PlayerData playerData);
 
     // 標記玩家斷線。
     public void recordDisconnectedPlayer(String game_id, String player_uuid);

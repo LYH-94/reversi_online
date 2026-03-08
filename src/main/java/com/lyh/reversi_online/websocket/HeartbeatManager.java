@@ -13,7 +13,13 @@ import java.util.concurrent.*;
 @Component
 public class HeartbeatManager {
     private final ConcurrentMap<WebSocketSession, Long> lastHeartbeatMap = new ConcurrentHashMap<>();
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    ThreadFactory factory = r -> {
+        Thread t = new Thread(r);
+        t.setName("Heartbeat-Thread-" + t.getId());
+        return t;
+    };
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(factory);
     private final IPlayerManagement playerManagement;
     private final WebSocketSessionManager webSocketSessionManager;
 
@@ -37,6 +43,8 @@ public class HeartbeatManager {
     }
 
     private void checkHeartbeats() {
+        // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行心跳機制 ...");
+
         long now = System.currentTimeMillis();
         for (Map.Entry<WebSocketSession, Long> entry : lastHeartbeatMap.entrySet()) {
             if (now - entry.getValue() > 60_000) {

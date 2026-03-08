@@ -1,12 +1,14 @@
 package com.lyh.reversi_online.service.game;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class DisconnectTimerManager {
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    ThreadFactory factory = r -> {
+        Thread t = new Thread(r);
+        t.setName("DisconnectTimerManager-Thread-" + t.getId());
+        return t;
+    };
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(factory);
     private ScheduledFuture<?> disconnectTask;
 
     // 啟動倒數計時

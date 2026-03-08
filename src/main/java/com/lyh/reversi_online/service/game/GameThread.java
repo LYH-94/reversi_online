@@ -9,11 +9,15 @@ import com.lyh.reversi_online.websocket.IWebSocketHandler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class GameThread implements Runnable {
+    private final BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
     private final String gameId;
     private final PlayerData playerData_One;
     private final PlayerData playerData_Two;
@@ -42,7 +46,7 @@ public class GameThread implements Runnable {
         this.playerManagement = playerManagement;
         this.onGameEnd = onGameEnd;
         this.onBroadcastGameData = onBroadcastGameData;
-        gameService.setGameData(createGameData(gameId, playerData_One, playerData_Two));
+        gameService.setGameData(createGameData());
 
         // 初始化黑子允許落子的位置。
         allowPosition.add("2,3");
@@ -54,15 +58,15 @@ public class GameThread implements Runnable {
     @Override
     public void run() {
         // System.out.println("對局開始：" + gameId);
+        // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行 GameThread 中的 run() ...");
         try {
             // 通知兩位玩家跳轉「對局」頁面。
             webSocketHandler.broadcast(playerData_One.getPlayer_uuid(), "redirect_page:gamePage", "{\"page_name\":\"gamePage\", \"reconnect\":\"false\"}");
             webSocketHandler.broadcast(playerData_Two.getPlayer_uuid(), "redirect_page:gamePage", "{\"page_name\":\"gamePage\", \"reconnect\":\"false\"}");
             playerManagement.getLobbyDataAndBroadcast();
             while (running.get()) {
-                Thread.sleep(5000); // 模擬等待事件。
-
-                // 跳出迴圈時，該對局執行緒將結束。
+                Runnable task = queue.take(); // 沒任務就阻塞，有任務就取出來。
+                task.run();
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -72,11 +76,23 @@ public class GameThread implements Runnable {
         // System.out.println("對局結束：" + gameId);
     }
 
+    // 提交 Runnable 任務。
+    public void submit(Runnable task) {
+        queue.offer(task);
+    }
+
+    // 提交 Callable 任務後等待結果。
+    public <T> FutureTask<T> submit(java.util.concurrent.Callable<T> callable) {
+        FutureTask<T> futureTask = new FutureTask<>(callable);
+        queue.offer(futureTask);
+        return futureTask;
+    }
+
     public String getGameId() {
         return gameId;
     }
 
-    private GameData createGameData(String game_id, PlayerData playerData_One, PlayerData playerData_Two) {
+    private GameData createGameData() {
         // 初始化棋盤，預設全部為空格 ' '
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -109,6 +125,7 @@ public class GameThread implements Runnable {
     }
 
     public void gameEnd(String game_id) {
+        // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行 GameThread 中的 gameEnd() ...");
         // 刪除 GameData
         gameService.deleteGameData(game_id);
 
@@ -125,6 +142,7 @@ public class GameThread implements Runnable {
     }
 
     public void surrender(PlayerData playerData) throws JsonProcessingException {
+        // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行 GameThread 中的 surrender() ...");
         // 將 gameData 物件中，該玩家設置為投降。
         if (gameData.getBlack_uuid().equals(playerData.getPlayer_uuid())) {
             // System.out.println("黑色投降");
@@ -158,6 +176,7 @@ public class GameThread implements Runnable {
     }
 
     public void recordDisconnectedPlayer(String player_uuid) {
+        // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行 GameThread 中的 recordDisconnectedPlayer() ...");
         // System.out.println("玩家斷線了");
 
         // 紀錄斷線的玩家
@@ -166,6 +185,7 @@ public class GameThread implements Runnable {
         // 啟動計時器
         timer.startDisconnectTimer(() -> {
             // System.out.println("玩家逾時未連線，自動判負！");
+            // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行斷線計時器 ...");
 
             // 更新 GameData
             // 斷線者判輸、未斷線者判贏，皆斷線判平手。
@@ -198,6 +218,7 @@ public class GameThread implements Runnable {
 
     // 重置/停止該對局中的計時器。大概還會有一個函式調用 timer.stopDisconnectTimer()，例如玩家重新連線時。
     public void resetOrStopTimer(String player_uuid) {
+        // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行 GameThread 中的 resetOrStopTimer() ...");
         // 將重新連線的玩家從 disconnectPlayerArray 中移除。
         disconnectPlayerArray.remove(player_uuid);
 
@@ -209,6 +230,7 @@ public class GameThread implements Runnable {
             // 重新啟動計時器
             timer.startDisconnectTimer(() -> {
                 // System.out.println("玩家逾時未連線，自動判負！");
+                // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行斷線計時器 ...");
 
                 // 更新 GameData
                 // 斷線者判輸、未斷線者判贏，皆斷線判平手。
@@ -240,7 +262,8 @@ public class GameThread implements Runnable {
         }
     }
 
-    public GameData playerMove(String player_uuid, String position) {
+    public void playerMove(String player_uuid, String position) {
+        // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行 GameThread 中的 playerMove() ...");
         boolean validationMove = false;
         boolean winOrLose = false;
 
@@ -309,14 +332,15 @@ public class GameThread implements Runnable {
                 gameEnd(gameData.getGame_id());
             }
         }
-        return gameData;
     }
 
     public PlayerData getPlayerData_One() {
+        // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行 GameThread 中的 getPlayerData_One() ...");
         return playerData_One;
     }
 
     public PlayerData getPlayerData_Two() {
+        // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行 GameThread 中的 getPlayerData_Two() ...");
         return playerData_Two;
     }
 }

@@ -1,6 +1,5 @@
 package com.lyh.reversi_online.service.game.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lyh.reversi_online.dao.IDataAccess;
 import com.lyh.reversi_online.pojo.GameData;
 import com.lyh.reversi_online.pojo.LobbyData;
@@ -84,7 +83,7 @@ public class GameService implements IGameService {
     }
 
     @Override
-    public void surrender(String player_uuid) throws JsonProcessingException {
+    public void surrender(String player_uuid) {
         PlayerData playerData = playerManagement.getPlayerData(player_uuid);
 
         // 判斷該玩家所在的對局是否還存在，若存在則中斷對局。

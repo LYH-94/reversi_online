@@ -1,4 +1,4 @@
-//const ws = new WebSocket("ws://localhost:7777/reversi_online/ws");
+//const ws = new WebSocket("ws://localhost:7776/reversi_online/ws");
 const ws = new WebSocket("ws://linyaohua.ddns.net:7777/reversi_online/ws");
 const url_getGamePage = "/reversi_online/pages/gamePage.html";
 const url_getLobbyPage = "/reversi_online/pages/lobbyPage.html";

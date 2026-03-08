@@ -60,11 +60,13 @@ public class GameThreadManager implements IGameThreadManager {
         // 2.啟動對局執行緒並儲存起來便於外部管理。
         // 建立回呼邏輯 1：當遊戲結束時，從 GameManager 移除
         Runnable onGameEnd = () -> {
+            // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行回呼邏輯 1 ...");
             gameManager.removeGame(gameId);
         };
         // 建立回呼邏輯 2：廣播「對局」數據給該對局中的其它玩家
         Consumer<GameData> onBroadcastGameData = (GameData gameData) -> {
             try {
+                // System.out.println("執行緒 " + Thread.currentThread().getName() + " 正在執行回呼邏輯 2 ...");
                 // 獲取所有位於該對局且在線的玩家列表。
                 List<PlayerData> playerDataList = redisAccess.getPlayerDataFromGame_id(gameData.getGame_id());
 
@@ -85,12 +87,18 @@ public class GameThreadManager implements IGameThreadManager {
     }
 
     @Override
-    public void surrender(PlayerData playerData) throws JsonProcessingException {
+    public void surrender(PlayerData playerData) {
         // 獲取 gameThread 執行緒物件。
         GameThread gameThread = gameManager.getGame(playerData.getGame_status().split(":")[1]);
 
         // 外部中斷該對局。
-        gameThread.surrender(playerData);
+        gameThread.submit(() -> {
+            try {
+                gameThread.surrender(playerData);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
@@ -99,7 +107,9 @@ public class GameThreadManager implements IGameThreadManager {
         GameThread gameThread = gameManager.getGame(game_id);
 
         // 標記斷線的玩家並啟動計時器。
-        gameThread.recordDisconnectedPlayer(player_uuid);
+        gameThread.submit(() -> {
+            gameThread.recordDisconnectedPlayer(player_uuid);
+        });
     }
 
     @Override
@@ -108,7 +118,9 @@ public class GameThreadManager implements IGameThreadManager {
         GameThread gameThread = gameManager.getGame(game_id);
 
         // 重置或停止計時器。
-        gameThread.resetOrStopTimer(player_uuid);
+        gameThread.submit(() -> {
+            gameThread.resetOrStopTimer(player_uuid);
+        });
     }
 
     @Override
@@ -120,7 +132,9 @@ public class GameThreadManager implements IGameThreadManager {
         if (gameThread.getPlayerData_One().getPlayer_uuid().equals(player_uuid) ||
                 gameThread.getPlayerData_Two().getPlayer_uuid().equals(player_uuid)) {
             // 調用該對局的 playerMove
-            GameData gameData = gameThread.playerMove(player_uuid, position);
+            gameThread.submit(() -> {
+                gameThread.playerMove(player_uuid, position);
+            });
         }
     }
 }
