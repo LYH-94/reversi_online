@@ -1,5 +1,10 @@
-//const ws = new WebSocket("ws://localhost:7776/reversi_online/ws");
-const ws = new WebSocket("ws://linyaohua.ddns.net:7777/reversi_online/ws");
+// 動態獲取目標網址。
+const ws = new WebSocket(
+   (location.protocol === 'https:' ? 'wss://' : 'ws://')
+   + location.host
+   + '/reversi_online/ws'
+);
+
 const url_getGamePage = "/reversi_online/pages/gamePage.html";
 const url_getLobbyPage = "/reversi_online/pages/lobbyPage.html";
 const url_getWatchPage = "/reversi_online/pages/gamePage.html"; // Watch 跟 Game 的頁面是一樣的，有需要在分開。

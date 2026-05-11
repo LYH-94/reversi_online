@@ -38,7 +38,7 @@ GitHub：[reversi_online](https://github.com/LYH-94/reversi_online)
 
 UI 設計：[Reversi online](https://www.figma.com/design/xZkkIagiOKJlOEd6kidLHC/Reversi-online?node-id=0-1&t=XvIsB9GLlsIkScgB-1)
 
-Demo - http://linyaohua.ddns.net:7777/reversi_online/connectionRequest
+Demo - https://favorite-consortium-ice-namely.trycloudflare.com/reversi_online/connectionRequest
 
 ※由於最少需要兩位玩家才能對局，試玩時可以利用瀏覽器的無痕模式模擬對手。
 
