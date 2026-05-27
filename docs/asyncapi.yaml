@@ -7,8 +7,8 @@ info:
 
 servers:
   ReversiOnline:
-    protocol: ws
-    url: ws://linyaohua.ddns.net:7777/reversi_online/ws
+    protocol: wss
+    url: wss://favorite-consortium-ice-namely.trycloudflare.com/reversi_online/ws
     x-handshake-process:
       description: WebSocket 握手階段前先從 cookie 中提取 player_uuid 並儲存至 Session 中，用於之後接收 WebSocket 訊息時方便辨識玩家。
     security:
@@ -16,14 +16,14 @@ servers:
 
 operations:
   sendLobbyData:
-    description: 發送「待機室」數據。
+    description: 發送「待機室」資料。
     action: send
     channel:
       $ref: '#/channels/lobby'
     messages:
       - $ref: '#/channels/lobby/messages/render_data:LobbyData'
   sendGameData:
-    description: 發送「對局」數據。
+    description: 發送「對局」資料。
     action: send
     channel:
       $ref: '#/channels/game'
@@ -97,11 +97,11 @@ channels:
 components:
   messages:
     render_data:LobbyData:
-      description: 發送「待機室」數據給前端渲染頁面。
+      description: 發送「待機室」資料給前端渲染頁面。
       payload:
         $ref: '#/components/schemas/render_data:LobbyData'
     render_data:GameData:
-      description: 發送「對局」數據給前端渲染頁面。
+      description: 發送「對局」資料給前端渲染頁面。
       payload:
         $ref: '#/components/schemas/render_data:GameData'
     redirect_page:lobbyPage:
@@ -130,7 +130,7 @@ components:
       properties:
         type:
           type: string
-          description: 渲染數據 'render_data:LobbyData'。
+          description: 渲染資料 'render_data:LobbyData'。
         message:
           type: object
           $ref: '#/components/schemas/LobbyData'
@@ -139,7 +139,7 @@ components:
       properties:
         type:
           type: string
-          description: 渲染數據 'render_data:GameData'。
+          description: 渲染資料 'render_data:GameData'。
         message:
           type: object
           $ref: '#/components/schemas/GameData'
@@ -163,7 +163,7 @@ components:
           description: 要獲取的頁面名稱為 gamePage。
         reconnect:
           type: boolean
-          description: 用於獲取對局數據時是否啟用「斷線重連」。
+          description: 用於獲取對局資料時是否啟用「斷線重連」。
     game_move:
       type: object
       description: 玩家落子訊息。
@@ -200,7 +200,7 @@ components:
       properties:
         id:
           type: integer
-          description: 每個 GameData 的自增 id，用於未來可能儲存至關聯式數據庫時使用。
+          description: 每個 GameData 的自增 id，用於未來可能儲存至關聯式資料庫時使用。
         game_id:
           type: string
           description: 表示對局的 id
@@ -239,7 +239,7 @@ components:
           $ref: '#/components/schemas/GameList'
     GameList:
       type: object
-      description: 用於待機室中觀戰列表的數據
+      description: 用於待機室中觀戰列表的資料
       properties:
         game_id:
           type: string

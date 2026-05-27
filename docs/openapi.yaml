@@ -3,7 +3,7 @@ info:
   title: Reversi Online OpenAPI document
   version: 1.0.2
 servers:
-  - url: http://linyaohua.ddns.net:7777/reversi_online
+  - url: https://favorite-consortium-ice-namely.trycloudflare.com/reversi_online
 paths:
   /connectionRequest:
     get:
@@ -57,15 +57,15 @@ paths:
                 type: string
   /lobbyData:
     get:
-      summary: 獲取「待機室」數據。
+      summary: 獲取「待機室」資料。
       description:
-        訪問「待機室」頁面後，還需要相關的數據，因此在獲取「待機室」頁面後，
-        接著發送 /lobbyData 請求，但該請求不接收數據，由 WebSocket 負責回傳數據。
+        訪問「待機室」頁面後，還需要相關的資料，因此在獲取「待機室」頁面後，
+        接著發送 /lobbyData 請求，但該請求不接收資料，由 WebSocket 負責回傳資料。
       tags:
         - player
       responses:
         '200':
-          description: 發送獲取「待機室」數據成功。
+          description: 發送獲取「待機室」資料成功。
   /pages/gamePage.html:
     get:
       summary: 請求「對局」頁面。
@@ -80,10 +80,10 @@ paths:
                 type: string
   /gameData/{req_reconnect}:
     get:
-      summary: 獲取「對局」數據。
+      summary: 獲取「對局」資料。
       description:
-        訪問「對局」頁面後，還需要相關的數據，因此在獲取「對局」頁面後，
-        接著發送 /gameData/{req_reconnect} 請求，但該請求不接收數據，由 WebSocket 負責回傳數據。
+        訪問「對局」頁面後，還需要相關的資料，因此在獲取「對局」頁面後，
+        接著發送 /gameData/{req_reconnect} 請求，但該請求不接收資料，由 WebSocket 負責回傳資料。
       parameters:
         - in: path
           name: req_reconnect
@@ -95,7 +95,7 @@ paths:
         - player
       responses:
         '200':
-          description: 發送獲取「對局」數據成功。
+          description: 發送獲取「對局」資料成功。
   /backToLooby:
     get:
       summary: 「返回待機室」請求。
@@ -126,9 +126,9 @@ paths:
     get:
       summary: 「觀戰」請求。
       description:
-        發送「觀戰」請求後，還需要相關的數據，因此在獲取頁面後，
-        接著發送 /watch/{req_gameId} 請求，但該請求不接收數據，
-        由 WebSocket 負責回傳數據。
+        發送「觀戰」請求後，還需要相關的資料，因此在獲取頁面後，
+        接著發送 /watch/{req_gameId} 請求，但該請求不接收資料，
+        由 WebSocket 負責回傳資料。
       parameters:
         - in: path
           name: req_gameId

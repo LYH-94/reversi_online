@@ -13,7 +13,7 @@
 
 [UML 建模](#UML-建模)
 
-[Redis 數據結構](#Redis-數據結構)
+[Redis 資料結構](#Redis-資料結構)
 
 [Web API 設計](#Web-API-設計)
 
@@ -29,16 +29,16 @@
 
 - Spring Boot：快速建置專案，整合 Spring MVC、WebSocket 與 Redis，簡化專案配置並加速開發流程。
 - WebSocket：處理全雙工通訊，實現對局同步與聊天廣播功能，提升對局與聊天的即時互動體驗。
-- Redis：暫存玩家與對局數據，加速查詢及優化系統效能。
+- Redis：暫存玩家與對局資料，加速查詢及優化系統效能。
 - Spring ThreadPoolTaskExecutor：管理多執行緒，設定核心/最大執行緒數以支援多場對局的併行處理並避免阻塞。
-- Vue：作為前端框架，用於接收後端傳遞的系統數據並進行動態頁面渲染，將結果呈現給使用者，實現前後端分離的開發模式。
-- UML系統建模：規劃核心模組、交互流程及部屬架構，釐清模組邊界並降低耦合度。
+- Vue：作為前端框架，用於接收後端傳遞的系統資料並進行動態頁面渲染，將結果呈現給使用者，實現前後端分離的開發模式。
+- UML 系統建模：規劃核心模組、交互流程及部屬架構，釐清模組邊界並降低耦合度。
 
 GitHub：[reversi_online](https://github.com/LYH-94/reversi_online)
 
 UI 設計：[Reversi online](https://www.figma.com/design/xZkkIagiOKJlOEd6kidLHC/Reversi-online?node-id=0-1&t=XvIsB9GLlsIkScgB-1)
 
-Demo - https://favorite-consortium-ice-namely.trycloudflare.com/reversi_online/connectionRequest
+Demo - [Reversi online](https://favorite-consortium-ice-namely.trycloudflare.com/reversi_online/connectionRequest)
 
 ※由於最少需要兩位玩家才能對局，試玩時可以利用瀏覽器的無痕模式模擬對手。
 
@@ -160,7 +160,7 @@ Demo - https://favorite-consortium-ice-namely.trycloudflare.com/reversi_online/c
 
 2. 伺服器 ( Linux )
 
-   伺服器運行 Tomcat 服務來處理客戶端請求，並透過 Redis 服務來存儲玩家數據與對局數據，如下：
+   伺服器運行 Tomcat 服務來處理客戶端請求，並透過 Redis 服務來存儲玩家資料與對局資料，如下：
 
 - Tomcat 服務
 
@@ -180,21 +180,21 @@ Demo - https://favorite-consortium-ice-namely.trycloudflare.com/reversi_online/c
 
   - 業務邏輯處理
 
-    處理非遊戲相關的業務邏輯，例如玩家初次連線獲取 UUID 的處理、待機室所需數據查詢等。
+    處理非遊戲相關的業務邏輯，例如玩家初次連線獲取 UUID 的處理、待機室所需資料查詢等。
 
   - Redis 連線存取
 
-    作為 Spring Boot 應用與 Redis 數據庫的橋梁，負責處理數據的存取。
+    作為 Spring Boot 應用與 Redis 資料庫的橋梁，負責處理資料的存取。
 
 - Redis 服務
 
-  用於存儲遊戲相關的數據：
+  用於存儲遊戲相關的資料：
 
-  - 玩家數據
+  - 玩家資料
 
     儲存玩家的連線狀態與基本信息，例如是否在線、是否處於對局狀態、當前所在的對局房間等。
 
-  - 對局數據
+  - 對局資料
 
     儲存正在進行的對局狀態，例如棋盤資訊、棋手 ID 等。
 </details>
@@ -279,11 +279,11 @@ Demo - https://favorite-consortium-ice-namely.trycloudflare.com/reversi_online/c
 </p>
 </details>
 
-## Redis 數據結構
+## Redis 資料結構
 
-該專案於 Redis 儲存的數據結構有兩種，分別為 玩家數據 ( PlayerData ) 和 對局數據 ( GameData )，如下：
+該專案於 Redis 儲存的資料結構有兩種，分別為 玩家資料 ( PlayerData ) 和 對局資料 ( GameData )，如下：
 
-- 玩家數據 PlayerData
+- 玩家資料 PlayerData
 
   Key：palyer_data:{player_uuid}
 
@@ -303,7 +303,7 @@ Demo - https://favorite-consortium-ice-namely.trycloudflare.com/reversi_online/c
 
     "online" | “offline:{yyyy-mm-dd}”
 
-- 對局數據 GameData
+- 對局資料 GameData
 
   Key：game_data:{game_id}
 
